@@ -480,7 +480,7 @@ data = [
 ]
 df_summary = pd.DataFrame(data, columns=columns)
 
-num_cols = ["REGION 1", "REGION 2", "TOTAL"]
+num_cols = ["PRICE"]
 df_summary_styled = (
     df_summary.style
     .format({col: format_rupiah for col in num_cols})
