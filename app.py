@@ -97,12 +97,11 @@ st.markdown("#### Input Structure")
 st.markdown(
     """
         <div style="text-align: justify; font-size: 15px; margin-bottom: 20px">
-            The input file required for this menu should be a <span style="color: #FF69B4; font-weight: 500;">
-            single file containing multiple sheets</span>, in eather <span style="background:#C6EFCE; 
-            padding:1px 4px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">.xlsx</span> 
-            or <span style="background:#FFEB9C; padding:2px 4px; border-radius:6px; font-weight:600; 
-            font-size: 0.75rem; color: black">.xls</span> format. Each sheet represents a vendor name, with the 
-            table structure in each sheet as follows:
+            The input file required for this menu should be a 
+            <span style="color: #FF69B4; font-weight: 500;">single file containing multiple sheets</span>, in eather 
+            <span style="background:#C6EFCE; padding:1px 4px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">.xlsx</span> or 
+            <span style="background:#FFEB9C; padding:2px 4px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">.xls</span> format. 
+            Each sheet represents a vendor name, with the table structure in each sheet as follows:
         </div>
     """,
     unsafe_allow_html=True
@@ -149,10 +148,11 @@ st.markdown(
 st.markdown(
     """
         <div style="text-align: justify; font-size: 15px; margin-bottom: 20px">
-            The system accommodates a <span style="font-weight: bold;">dynamic table</span>,
-            allowing users to enter any number of non-numeric and numeric columns. Users have 
-            the freedom to name the columns as they wish. The system logic relies on <span 
-            style="font-weight: bold;">column indices</span>, not specific column names.
+            The system accommodates a 
+            <span style="font-weight: bold;">dynamic table</span>,
+            allowing users to enter any number of non-numeric and numeric columns. 
+            Users have the freedom to name the columns as they wish. The system logic relies on 
+            <span style="font-weight: bold;">column indices</span>, not specific column names.
         </div>
     """,
     unsafe_allow_html=True
@@ -195,8 +195,9 @@ st.markdown(
 
 st.markdown(
     """
-        <div style="text-align: justify; font-size: 15px; margin-bottom: 20px">
-            this order is <span style="color: #FF69B4; font-weight: 700;">strict</span> and 
+        <div style="text-align: justify; font-size: 15px; margin-bottom: 25px">
+            this order is 
+            <span style="color: #FF69B4; font-weight: 700;">strict</span> and 
             <span style="color: #FF69B4; font-weight: 700;">cannot be altered</span>!
         </div>
     """,
@@ -226,14 +227,15 @@ st.dataframe(df, hide_index=True)
 
 st.markdown(
     """
-        <div style="text-align: justify; font-size: 15px; margin-bottom: 20px; margin-top: -5px;">
-            The table above is an <span style="color: #FF69B4; font-weight: 700;">incorrect example</span>
-            and is <span style="color: #FF69B4; font-weight: 700;">not allowed</span> because it contains 
-            a <span style="font-weight: bold;">"No"</span> column. The "No" column is prohibited in this
-            menu, as it will be treated as a numeric column by the system, which violates the constraint
-            described in point 1. Additionally, the <span style="background:#FFCB09; padding:2px 4px; 
-            border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">Year</span> column must 
-            be placed as the first index (idx[0]).
+        <div style="text-align: justify; font-size: 15px; margin-bottom: 25px; margin-top: -5px;">
+            The table above is an 
+            <span style="color: #FF69B4; font-weight: 700;">incorrect example</span> and is 
+            <span style="color: #FF69B4; font-weight: 700;">not allowed</span> because it contains a 
+            <span style="font-weight: bold;">"No"</span> column. 
+            The "No" column is prohibited in this menu, as it will be treated as a numeric column by the system, 
+            which violates the constraint described in point 1. Additionally, the 
+            <span style="background:#FFCB09; padding:2px 4px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">Year</span> 
+            column must be placed as the first column.
         </div>
     """,
     unsafe_allow_html=True
@@ -243,9 +245,9 @@ st.markdown("**:green-badge[3. FLOATING TABLE]**")
 st.markdown(
     """
         <div style="text-align: justify; font-size: 15px; margin-bottom: 10px; margin-top:-10px;">
-            Floating tables are allowed, meaning tables <span style="color: #FF69B4; font-weight: 700;">
-            do not need to start from cell A1</span>. However, ensure
-            that the cells above and to the left of the table are empty, as shown in the example below:
+            Floating tables are allowed, meaning tables 
+            <span style="color: #FF69B4; font-weight: 700;">do not need to start from cell A1</span>. 
+            However, ensure that the cells above and to the left of the table are empty, as shown in the example below:
         </div>
     """,
     unsafe_allow_html=True
@@ -273,14 +275,66 @@ st.dataframe(df, hide_index=True)
 
 st.markdown(
     """
-        <div style="text-align: justify; font-size: 15px; margin-bottom: 20px; margin-top:-10px;">
+        <div style="text-align: justify; font-size: 15px; margin-bottom: 25px; margin-top:-10px;">
             To provide additional explanations or notes on the sheet, you can include them using an image or a text box.
         </div>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown("**:blue-badge[Unlike the 'TCO Comparison by Year' menu, you are NOT allowed to add a TOTAL column as the last column!]**")
+st.markdown("**:blue-badge[4. TOTAL COLUMN & TOTAL ROW]**")
+st.markdown(
+    """
+        <div style="text-align: justify; font-size: 15px; margin-bottom: 10px; margin-top:-10px;">
+            You are not allowed to add a
+            <span style="font-weight: 700;">TOTAL COLUMN</span> or
+            <span style="font-weight: 700;">TOTAL ROW</span>!
+            Please refer to the example table below:
+        </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# DataFrame
+columns = ["Year", "Scope", "Region 1", "Region 2", "Region 3", "TOTAL"]
+data = [
+    ["2025", "AirCon Dismantle", "1.000", "2.000", "3.000", "6.000"],
+    ["2025", "ACPBD Dismantle", "5.500", "6.500", "7.500", "19.500"],
+    ["2025", "TOTAL", "6.500", "8.500", "10.500", "25.500"],
+]
+df = pd.DataFrame(data, columns=columns)
+
+def red_highlight(row):
+    styles = [""] * len(row)
+
+    # Highlight ROW "TOTAL"
+    if row["Scope"] == "TOTAL":
+        styles = ["color: #FF4D4D;" for _ in row]
+    else:
+        # Highlight COLUMN "TOTAL"
+        total_col_index = row.index.get_loc("TOTAL")
+        styles[total_col_index] = "color: #FF4D4D;"
+
+    return styles
+
+num_cols = ["Y0", "Y1", "Y2", "Y3", "TOTAL 3Y TCO"]
+df_styled = df.style.apply(red_highlight, axis=1)
+
+st.dataframe(df_styled, hide_index=True)
+
+st.markdown(
+    """
+        <div style="text-align: justify; font-size: 15px; margin-bottom: 20px; margin-top: -5px;">
+            The table above is an 
+            <span style="color: #FF69B4; font-weight: 700;">incorrect example</span> and is 
+            <span style="color: #FF69B4; font-weight: 700;">not permitted</span>! 
+            The total column & row are generated automatically during
+            <span style="font-weight: 700;">MERGE DATA</span> — 
+            do not add them manually. If added, the system will treat them as part of the region & scope, and included them in calculations.
+        </div>
+    """,
+    unsafe_allow_html=True
+)
 
 st.divider()
 
@@ -311,7 +365,7 @@ def release_the_balloons():
 st.download_button(
     label="Dummy Dataset",
     data=file_data,
-    file_name="dummy dataset.xlsx",
+    file_name="Dummy Dataset - TCO Comparison by Year + Region.xlsx",
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     on_click=release_the_balloons,
     type="primary",
@@ -331,9 +385,9 @@ st.markdown("**:red-badge[1. MERGE DATA]**")
 st.markdown(
     """
         <div style="text-align: justify; font-size: 15px; margin-bottom: 10px; margin-top:-10px;">
-            The system will merge the tables from each sheet into a single table and add
-            a <span style="background:#FFCB09; padding:2px 4px; border-radius:6px; font-weight:600; 
-            font-size: 0.75rem; color: black">TOTAL ROW</span> based on year and scope, as shown below.
+            The system will merge the tables from each sheet into a single table and add a 
+            <span style="background:#FFCB09; padding:2px 4px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">TOTAL ROW</span> 
+            based on year and scope, as shown below.
         </div>
     """,
     unsafe_allow_html=True
@@ -495,9 +549,8 @@ st.markdown("**:yellow-badge[3. TCO SUMMARY]**")
 st.markdown(
     """
         <div style="text-align: justify; font-size: 15px; margin-bottom: 10px; margin-top:-10px;">
-            The system will automatically generate a TCO Summary that includes 
-            the TOTAL calculations. Because this case involves a multi-dimensional column structure, 
-            the TCO Summary is split into three tabs, as follows.
+            The system will automatically generate a TCO Summary that includes the TOTAL calculations. 
+            Because this case involves a multi-dimensional column structure, the TCO Summary is split into three tabs, as follows.
         </div>
     """,
     unsafe_allow_html=True
@@ -615,10 +668,10 @@ st.markdown("**:blue-badge[5. VISUALIZATION]**")
 st.markdown(
     """
         <div style="text-align: justify; font-size: 15px; margin-bottom: 10px; margin-top:-10px;">
-            This menu displays visualizations focusing on two key aspects: <span style="background: #FF5E5E; 
-            padding:1px 4px; border-radius:6px; font-weight:600; font-size: 13px; color: black">Win Rate Trend</span> 
-            and <span style="background: #FF00AA; padding:2px 4px; border-radius:6px; font-weight:600; 
-            font-size: 13px; color: black">Average Gap Trend</span>, each presented in its own tab.
+            This menu displays visualizations focusing on two key aspects: 
+            <span style="background: #FF5E5E; padding:1px 4px; border-radius:6px; font-weight:600; font-size: 13px; color: black">Win Rate Trend</span> and 
+            <span style="background: #FF00AA; padding:2px 4px; border-radius:6px; font-weight:600; font-size: 13px; color: black">Average Gap Trend</span>, 
+            each presented in its own tab.
         </div>
     """,
     unsafe_allow_html=True
@@ -667,9 +720,10 @@ st.markdown("**:violet-badge[6. SUPER BUTTON]**")
 st.markdown(
     """
         <div style="text-align: justify; font-size: 15px; margin-bottom: 10px; margin-top:-10px;">
-            Lastly, there is a <span style="background:#FFCB09; padding:2px 4px; border-radius:6px; font-weight:600; 
-            font-size: 0.75rem; color: black">Super Button</span> feature where all dataframes generated by the system 
-            can be downloaded as a single file with multiple sheets. You can also customize the order of the sheets.
+            Lastly, there is a 
+            <span style="background:#FFCB09; padding:2px 4px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">Super Button</span> 
+            feature where all dataframes generated by the system can be downloaded as a single file with multiple sheets. 
+            You can also customize the order of the sheets.
             The interface looks more or less like this.
         </div>
     """,
@@ -789,7 +843,7 @@ if selected_sheets:
     st.download_button(
         label="Download",
         data=excel_bytes,
-        file_name="super botton.xlsx",
+        file_name="Supper Botton - TCO Comparison by Year + Region.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         type="primary",
         use_container_width=True,
@@ -803,8 +857,8 @@ st.markdown(
     """
         <div style="text-align: justify; font-size: 15px; margin-bottom: 10px; margin-top:-10px;">
             I have also included a video tutorial, which you can access through the 
-            <span style="background:#FF0000; padding:2px 4px; border-radius:6px; font-weight:600; 
-            font-size: 0.75rem; color: black">YouTube</span> link below.
+            <span style="background:#FF0000; padding:2px 4px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">YouTube</span> 
+            link below.
         </div>
     """,
     unsafe_allow_html=True
