@@ -25,9 +25,14 @@ def format_rupiah(x):
     return formatted
 
 def highlight_total(row):
-    # Cek apakah ada kolom yang berisi "TOTAL" (case-insensitive)
     if any(str(x).strip().upper() == "TOTAL" for x in row):
         return ["font-weight: bold; background-color: #D9EAD3; color: #1A5E20;"] * len(row)
+    else:
+        return [""] * len(row)
+    
+def highlight_bold(row):
+    if any(str(x).strip().upper() == "TOTAL" for x in row):
+        return ["font-weight: bold;"] * len(row)
     else:
         return [""] * len(row)
     
@@ -45,21 +50,56 @@ def highlight_vendor_total(row):
     else:
         return [""] * len(row)
     
-def highlight_1st_2nd_vendor(row, columns):
+def highlight_rank_summary(row, num_cols):
+    styles = [""] * len(row)
+
+    # Ambil nilai numeric vendor
+    numeric_vals = row[num_cols]
+
+    # EXCLUDE nilai 0 (vendor tidak ikut tender)
+    numeric_vals = numeric_vals[numeric_vals != 0]
+
+    # Skip jika kosong / NaN semua
+    if numeric_vals.dropna().empty:
+        return styles
+
+    # Sort numeric values
+    sorted_vals = numeric_vals.sort_values()
+
+    # Determine 1st & 2nd rank
+    first_vendor = sorted_vals.index[0]
+    second_vendor = sorted_vals.index[1] if len(sorted_vals) > 1 else None
+
+    # Apply styles
+    for i, col in enumerate(row.index):
+        if col == first_vendor:
+            styles[i] = "background-color: #C6EFCE; color: #006100;"
+        elif second_vendor and col == second_vendor:
+            styles[i] = "background-color: #FFEB9C; color: #9C6500;"
+
+    return styles
+
+def highlight_1st_2nd(row, columns):
     styles = [""] * len(columns)
     first_vendor = row.get("1st Vendor")
     second_vendor = row.get("2nd Vendor")
 
     for i, col in enumerate(columns):
         if col == first_vendor:
-            # styles[i] = "background-color: #f8c8dc; color: #7a1f47;"
             styles[i] = "background-color: #C6EFCE; color: #006100;"
         elif col == second_vendor:
-            # styles[i] = "background-color: #d7c6f3; color: #402e72;"
             styles[i] = "background-color: #FFEB9C; color: #9C6500;"
     return styles
 
-st.subheader("🧑‍🏫 User Guide: TCO Comparison by Year + Region")
+st.markdown(
+    """
+    <div style="font-size:1.75rem; font-weight:700; margin-bottom:9px">
+        🧑‍🏫 User Guide: TCO Comparison by Year + Region
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 st.markdown(
     ":red-badge[Indosat] :orange-badge[Ooredoo] :green-badge[Hutchison]"
 )
@@ -559,6 +599,17 @@ st.markdown(
 tab1, tab2, tab3 = st.tabs(["YEAR", "REGION", "SCOPE"])
 
 with tab1:
+    st.markdown(
+        """
+        <div style="text-align:left; margin-bottom: 8px; margin-top: -5px;">
+            <span style="background:#C6EFCE; padding:2px 8px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">1st Lowest</span>
+            &nbsp;
+            <span style="background:#FFEB9C; padding:2px 8px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">2nd Lowest</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     # DataFrame
     columns = ["YEAR", "VENDOR A", "VENDOR B", "VENDOR C"]
     data = [
@@ -572,11 +623,23 @@ with tab1:
     df_tco_year_styled = (
         df_tco_year.style
         .format({col: format_rupiah for col in num_cols})
-        .apply(highlight_total, axis=1)
+        .apply(highlight_bold, axis=1)
+        .apply(lambda row: highlight_rank_summary(row, num_cols), axis=1)
     )
     st.dataframe(df_tco_year_styled, hide_index=True)
 
 with tab2:
+    st.markdown(
+        """
+        <div style="text-align:left; margin-bottom: 8px; margin-top: -5px;">
+            <span style="background:#C6EFCE; padding:2px 8px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">1st Lowest</span>
+            &nbsp;
+            <span style="background:#FFEB9C; padding:2px 8px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">2nd Lowest</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+        
     # DataFrame
     columns = ["REGION", "VENDOR A", "VENDOR B", "VENDOR C"]
     data = [
@@ -590,11 +653,23 @@ with tab2:
     df_tco_region_styled = (
         df_tco_region.style
         .format({col: format_rupiah for col in num_cols})
-        .apply(highlight_total, axis=1)
+        .apply(highlight_bold, axis=1)
+        .apply(lambda row: highlight_rank_summary(row, num_cols), axis=1)
     )
     st.dataframe(df_tco_region_styled, hide_index=True)
 
 with tab3:
+    st.markdown(
+        """
+        <div style="text-align:left; margin-bottom: 8px; margin-top: -5px;">
+            <span style="background:#C6EFCE; padding:2px 8px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">1st Lowest</span>
+            &nbsp;
+            <span style="background:#FFEB9C; padding:2px 8px; border-radius:6px; font-weight:600; font-size: 0.75rem; color: black">2nd Lowest</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     # DataFrame
     columns = ["SCOPE", "VENDOR A", "VENDOR B", "VENDOR C"]
     data = [
@@ -609,7 +684,8 @@ with tab3:
     df_tco_scope_styled = (
         df_tco_scope.style
         .format({col: format_rupiah for col in num_cols})
-        .apply(highlight_total, axis=1)
+        .apply(highlight_bold, axis=1)
+        .apply(lambda row: highlight_rank_summary(row, num_cols), axis=1)
     )
     st.dataframe(df_tco_scope_styled, hide_index=True)
 
@@ -639,26 +715,33 @@ st.markdown(
 # DataFrame
 columns = ["YEAR", "REGION", "SCOPE", "VENDOR A", "VENDOR B", "VENDOR C", "1st Lowest", "1st Vendor", "2nd Lowest", "2nd Vendor", "Gap 1 to 2 (%)", "Median Price", "VENDOR A to Median (%)", "VENDOR B to Median (%)", "VENDOR C to Median (%)"]
 data = [
-    ["2025","REGION 1","DG Dismantle",45000,46200,43500,43500,"VENDOR C",45000,"VENDOR A","3.5%",45000,"+0.0%","+2.7%","-3.3%"],
-    ["2025","REGION 1","RAN & Power Supply",68000,70500,73800,68000,"VENDOR A",70500,"VENDOR B","3.7%",70500,"-3.5%","+0.0%","+4.7%"],
-    ["2025","REGION 1","Site Survey",8500,8200,8900,8200,"VENDOR B",8500,"VENDOR A","3.7%",8500,"+0.0%","-3.5%","+4.7%"],
-    ["2025","REGION 2","DG Dismantle",47800,49000,46000,46000,"VENDOR C",47800,"VENDOR A","3.9%",47800,"+0.0%","+2.5%","-3.8%"],
-    ["2025","REGION 2","RAN & Power Supply",65500,67900,71500,65500,"VENDOR A",67900,"VENDOR B","3.7%",67900,"-3.5%","+0.0%","+5.3%"],
-    ["2025","REGION 2","Site Survey",9000,8700,9200,8700,"VENDOR B",9000,"VENDOR A","3.5%",9000,"+0.0%","-3.3%","+2.2%"],
-    ["2026","REGION 1","DG Dismantle",46500,48900,51300,46500,"VENDOR A",48900,"VENDOR B","5.2%",48900,"-4.9%","+0.0%","+4.9%"],
-    ["2026","REGION 1","RAN & Power Supply",74900,71900,69500,69500,"VENDOR C",71900,"VENDOR B","3.5%",71900,"+4.2","+0.0%","-3.3%"],
-    ["2026","REGION 1","Site Survey",9200,8700,9700,8700,"VENDOR B",9200,"VENDOR A","5.8%",9200,"+0.0%","-5.4%","+5.4%"],
-    ["2026","REGION 2","DG Dismantle",44000,46800,49100,44000,"VENDOR A",46800,"VENDOR B","6.4%",46800,"-6.0%","+0.0%","+4.9%"],
-    ["2026","REGION 2","RAN & Power Supply",72400,69300,66800,66800,"VENDOR C",69300,"VENDOR B","3.7%",69300,"+4.5%","+0.0%","-3.6%"],
-    ["2026","REGION 2","Site Survey",8800,8300,9300,8300,"VENDOR B",8800,"VENDOR A","6.0%",8800,"+0.0%","-5.7%","+5.7%"],
+    ["2025","REGION 1","DG Dismantle",45000,46200,43500,43500,"VENDOR C",45000,"VENDOR A", 3.5, 45000, 0, 2.7, -3.3],
+    ["2025","REGION 1","RAN & Power Supply",68000,70500,73800,68000,"VENDOR A",70500,"VENDOR B", 3.7, 70500, -3.5, 0, 4.7],
+    ["2025","REGION 1","Site Survey",8500,8200,8900,8200,"VENDOR B",8500,"VENDOR A", 3.7, 8500, 0, -3.5, 4.7],
+    ["2025","REGION 2","DG Dismantle",47800,49000,46000,46000,"VENDOR C",47800,"VENDOR A", 3.9, 47800, 0, 2.5, -3.8],
+    ["2025","REGION 2","RAN & Power Supply",65500,67900,71500,65500,"VENDOR A",67900,"VENDOR B", 3.7, 67900, -3.5, 0, 5.3],
+    ["2025","REGION 2","Site Survey",9000,8700,9200,8700,"VENDOR B",9000,"VENDOR A", 3.5, 9000, 0, -3.3, 2.2],
+    ["2026","REGION 1","DG Dismantle",46500,48900,51300,46500,"VENDOR A",48900,"VENDOR B", 5.2, 48900, -4.9, 0, 4.9],
+    ["2026","REGION 1","RAN & Power Supply",74900,71900,69500,69500,"VENDOR C",71900,"VENDOR B", 3.5, 71900, 4.2, 0, -3.3],
+    ["2026","REGION 1","Site Survey",9200,8700,9700,8700,"VENDOR B",9200,"VENDOR A", 5.8, 9200, 0, -5.4, 5.4],
+    ["2026","REGION 2","DG Dismantle",44000,46800,49100,44000,"VENDOR A",46800,"VENDOR B", 6.4, 46800, -6, 0, 4.9],
+    ["2026","REGION 2","RAN & Power Supply",72400,69300,66800,66800,"VENDOR C",69300,"VENDOR B", 3.7, 69300, 4.5, 0, -3.6],
+    ["2026","REGION 2","Site Survey",8800,8300,9300,8300,"VENDOR B",8800,"VENDOR A", 6, 8800, 0, -5.7, 5.7],
 ]
 df_analysis = pd.DataFrame(data, columns=columns)
 
 num_cols = ["VENDOR A", "VENDOR B", "VENDOR C", "1st Lowest", "2nd Lowest", "Median Price"]
+format_dic = {col: format_rupiah for col in num_cols}
+format_dic.update({"Gap 1 to 2 (%)": "{:.1f}%"})
+
+vendor_cols = ["VENDOR A", "VENDOR B", "VENDOR C"]
+for v in vendor_cols:
+    format_dic[f"{v} to Median (%)"] = "{:+.1f}%"
+
 df_analysis_styled = (
     df_analysis.style
-    .format({col: format_rupiah for col in num_cols})
-    .apply(lambda row: highlight_1st_2nd_vendor(row, df_analysis.columns), axis=1)
+    .format(format_dic)
+    .apply(lambda row: highlight_1st_2nd(row, df_analysis.columns), axis=1)
 )
 
 st.dataframe(df_analysis_styled, hide_index=True)
@@ -748,90 +831,130 @@ selected_sheets = st.multiselect(
 
 # Fungsi "Super Button" & Formatting
 def generate_multi_sheet_excel(selected_sheets, df_dict):
-    """
-    Gabungkan sheet dengan highlight khusus per sheet:
-    - Merge Data / Cost Summary: highlight TOTAL per year & TOTAL vendor
-    - Bid & Price Analysis: highlight 1st & 2nd vendor + TOTAL
-    - TCO sheets: highlight TOTAL
-    Semua akses baris pakai index, jadi aman untuk kolom dengan spasi/simbol.
-    """
     output = BytesIO()
 
     with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
         for sheet in selected_sheets:
-            df = df_dict[sheet].copy()
+            df = df_dict[sheet]
+            df.to_excel(writer, index=False, sheet_name=sheet)
+
             workbook  = writer.book
-            worksheet = workbook.add_worksheet(sheet)
-            writer.sheets[sheet] = worksheet
+            worksheet = writer.sheets[sheet]
 
-            # --- Format umum ---
-            fmt_rupiah = workbook.add_format({'num_format': '#,##0'})
-            fmt_pct    = workbook.add_format({'num_format': '#,##0.0"%"'})
-            fmt_total  = workbook.add_format({'bold': True, 'bg_color': '#D9EAD3', 'font_color': '#1A5E20', 'num_format': '#,##0'})
-            fmt_first  = workbook.add_format({'bg_color': '#C6EFCE', "num_format": "#,##0"})
-            fmt_second = workbook.add_format({'bg_color': '#FFEB9C', "num_format": "#,##0"})
-            fmt_total_year  = workbook.add_format({'bold': True, 'bg_color': '#FFEB9C', 'font_color': '#1A1A1A', 'num_format': '#,##0'})
-            fmt_total_vendor  = workbook.add_format({'bold': True, 'bg_color': '#C6EFCE', 'font_color': '#1A5E20', 'num_format': '#,##0'})
+            # ================= FORMAT =================
+            fmt_rp   = workbook.add_format({'num_format': '#,##0'})
+            fmt_pct  = workbook.add_format({'num_format': '#,##0.0"%"'})
+            fmt_bold = workbook.add_format({'bold': True, 'num_format': '#,##0'})
 
-            # --- Tulis header ---
-            for col_idx, col_name in enumerate(df.columns):
-                worksheet.write(0, col_idx, col_name)
+            # Merge / Cost Summary
+            fmt_total_year = workbook.add_format({
+                'bold': True, 'bg_color': '#FFEB9C', 'font_color': '#9C6500', 'num_format': '#,##0'
+            })
+            fmt_total_vendor = workbook.add_format({
+                'bold': True, 'bg_color': '#C6EFCE', 'font_color': '#006100', 'num_format': '#,##0'
+            })
 
-            numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
-            vendor_cols  = [c for c in numeric_cols] if sheet == "Bid & Price Analysis" else []
+            # Ranking
+            fmt_1  = workbook.add_format({'bg_color': '#C6EFCE', 'font_color': '#006100', 'num_format': '#,##0'})
+            fmt_2  = workbook.add_format({'bg_color': '#FFEB9C', 'font_color': '#9C6500', 'num_format': '#,##0'})
+            fmt_1b = workbook.add_format({'bg_color': '#C6EFCE', 'font_color': '#006100', 'bold': True, 'num_format': '#,##0'})
+            fmt_2b = workbook.add_format({'bg_color': '#FFEB9C', 'font_color': '#9C6500', 'bold': True, 'num_format': '#,##0'})
 
-            # Atur lebar kolom
-            for col_idx, col_name in enumerate(df.columns):
-                if col_name in numeric_cols:
-                    worksheet.set_column(col_idx, col_idx, 15, fmt_rupiah)
-                if "%" in col_name:
-                    worksheet.set_column(col_idx, col_idx, 15, fmt_pct)
+            num_cols = df.select_dtypes(include=["number"]).columns.tolist()
+            pct_cols = [c for c in df.columns if "%" in c]
 
-            # --- Tulis baris dengan highlight ---
-            for row_idx, row in enumerate(df.itertuples(index=False), start=1):
-                fmt_row = [None]*len(df.columns)
+            # Cost Summary dynamic column
+            year_col  = next((c for c in df.columns if "YEAR" in c.upper()), None)
+            scope_col = next((c for c in df.columns if "SCOPE" in c.upper()), None)
+            year_idx  = df.columns.get_loc(year_col) if year_col else None
+            scope_idx = df.columns.get_loc(scope_col) if scope_col else None
 
-                # --- Merge Data highlight ---
+            # ================= LOOP ROW =================
+            for r, (_, row) in enumerate(df.iterrows(), start=1):
+
+                is_total = any(str(x).strip().upper() == "TOTAL" for x in row)
+                row_fmt = None
+                first = second = None
+
+                # ---------- MERGE DATA ----------
                 if sheet == "Merge Data":
-                    year_val  = str(row[1]).upper()   # kolom Year
-                    scope_val = str(row[2]).upper()   # kolom Scope
-                    if scope_val == "TOTAL" and year_val != "TOTAL":
-                        fmt_row = [fmt_total_year]*len(df.columns)
-                    elif year_val == "TOTAL":
-                        fmt_row = [fmt_total_vendor]*len(df.columns)
+                    year_val  = str(row.iloc[1]).strip().upper()
+                    scope_val = str(row.iloc[2]).strip().upper()
 
-                # --- Cost Summary highlight ---
+                    if scope_val == "TOTAL" and year_val != "TOTAL":
+                        row_fmt = fmt_total_year
+                    elif year_val == "TOTAL":
+                        row_fmt = fmt_total_vendor
+
+                # ---------- COST SUMMARY ----------
                 elif sheet == "Cost Summary":
-                    year_val  = str(row[1]).upper()
-                    scope_val = str(row[3]).upper()
+                    year_val  = str(row.iloc[year_idx]).strip().upper() if year_idx is not None else ""
+                    scope_val = str(row.iloc[scope_idx]).strip().upper() if scope_idx is not None else ""
+
                     if scope_val == "TOTAL" and year_val != "TOTAL":
-                        fmt_row = [fmt_total_year]*len(df.columns)
+                        row_fmt = fmt_total_year
                     elif year_val == "TOTAL":
-                        fmt_row = [fmt_total_vendor]*len(df.columns)
+                        row_fmt = fmt_total_vendor
 
-                # --- Bid & Price Analysis highlight ---
+                # ---------- TCO SUMMARY ----------
+                elif sheet in ["TCO Summary (Year)", "TCO Summary (Region)", "TCO Summary (Scope)"]:
+                    numeric_vals = row[num_cols]
+                    numeric_vals = numeric_vals[(numeric_vals.notna()) & (numeric_vals != 0)]
+
+                    if not numeric_vals.empty:
+                        sorted_vals = numeric_vals.sort_values()
+                        first = sorted_vals.index[0]
+                        if len(sorted_vals) > 1:
+                            second = sorted_vals.index[1]
+
+                # ---------- BID & PRICE ----------
                 elif sheet == "Bid & Price Analysis":
-                    first_vendor_name  = row[df.columns.get_loc("1st Vendor")]
-                    second_vendor_name = row[df.columns.get_loc("2nd Vendor")]
-                    for col_idx2, col_name2 in enumerate(df.columns):
-                        if col_name2 == first_vendor_name:
-                            fmt_row[col_idx2] = fmt_first
-                        elif col_name2 == second_vendor_name:
-                            fmt_row[col_idx2] = fmt_second
-                        elif str(row[col_idx2]).upper() == "TOTAL":
-                            fmt_row[col_idx2] = fmt_total
+                    first = row.get("1st Vendor")
+                    second = row.get("2nd Vendor")
 
-                # --- TCO sheets highlight TOTAL ---
-                else:
-                    if any(str(row[i]).upper() == "TOTAL" for i in range(len(df.columns)) if row[i] is not None):
-                        fmt_row = [fmt_total]*len(df.columns)
+                # ================= WRITE CELL =================
+                for c, col in enumerate(df.columns):
+                    val = row[col]
 
-                # --- Tulis sel ---
-                for col_idx2 in range(len(df.columns)):
-                    value = row[col_idx2]
-                    if pd.isna(value) or (isinstance(value, (int,float)) and np.isinf(value)):
-                        value = ""
-                    worksheet.write(row_idx, col_idx2, value, fmt_row[col_idx2] if fmt_row[col_idx2] else None)
+                    if pd.isna(val) or (isinstance(val, (int, float)) and np.isinf(val)):
+                        worksheet.write(r, c, "")
+                        continue
+
+                    fmt = None
+                    is_zero = isinstance(val, (int, float)) and val == 0
+
+                    # --- ranking highlight ---
+                    if sheet in ["TCO Summary (Year)", "TCO Summary (Region)", "TCO Summary (Scope)"] and not is_zero:
+                        if col == first:
+                            fmt = fmt_1b if is_total else fmt_1
+                        elif col == second:
+                            fmt = fmt_2b if is_total else fmt_2
+
+                    # --- Bid & Price ---
+                    elif sheet == "Bid & Price Analysis":
+                        if col == first:
+                            fmt = fmt_1
+                        elif col == second:
+                            fmt = fmt_2
+
+                    # --- TOTAL text ---
+                    if is_total and fmt is None and row_fmt is None:
+                        fmt = fmt_bold
+
+                    # --- WRITE ---
+                    if col in pct_cols:
+                        worksheet.write_number(r, c, val, fmt or fmt_pct)
+                    elif col in num_cols:
+                        worksheet.write_number(r, c, val, fmt or (row_fmt or fmt_rp))
+                    else:
+                        worksheet.write(r, c, val, row_fmt or fmt)
+
+            # ================= AUTOFIT =================
+            for i, col in enumerate(df.columns):
+                worksheet.set_column(
+                    i, i,
+                    max(len(str(col)), df[col].astype(str).map(len).max()) + 2
+                )
 
     output.seek(0)
     return output.getvalue()
