@@ -855,10 +855,10 @@ def generate_multi_sheet_excel(selected_sheets, df_dict):
             })
 
             # Ranking
-            fmt_1  = workbook.add_format({'bg_color': '#C6EFCE', 'font_color': '#006100', 'num_format': '#,##0'})
-            fmt_2  = workbook.add_format({'bg_color': '#FFEB9C', 'font_color': '#9C6500', 'num_format': '#,##0'})
-            fmt_1b = workbook.add_format({'bg_color': '#C6EFCE', 'font_color': '#006100', 'bold': True, 'num_format': '#,##0'})
-            fmt_2b = workbook.add_format({'bg_color': '#FFEB9C', 'font_color': '#9C6500', 'bold': True, 'num_format': '#,##0'})
+            fmt_1  = workbook.add_format({'bg_color': '#C6EFCE', 'num_format': '#,##0'})
+            fmt_2  = workbook.add_format({'bg_color': '#FFEB9C', 'num_format': '#,##0'})
+            fmt_1b = workbook.add_format({'bg_color': '#C6EFCE', 'bold': True, 'num_format': '#,##0'})
+            fmt_2b = workbook.add_format({'bg_color': '#FFEB9C', 'bold': True, 'num_format': '#,##0'})
 
             num_cols = df.select_dtypes(include=["number"]).columns.tolist()
             pct_cols = [c for c in df.columns if "%" in c]
